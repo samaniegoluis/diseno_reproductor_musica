@@ -1,3 +1,4 @@
+import 'package:diseno_reproductor_musica/reproductor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -45,8 +46,12 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           Expanded(
             child: ListView(
-              children:
-                  canciones.map((cancion) => itemAudio(cancion, 1)).toList(),
+              children: canciones
+                  .asMap()
+                  .map((index, cancion) =>
+                      MapEntry(index, itemAudio(context, cancion, index + 1)))
+                  .values
+                  .toList(),
             ),
           ),
         ],
@@ -188,52 +193,63 @@ Widget descripcionArtista(BuildContext context) {
   );
 }
 
-Widget itemAudio(Cancion cancion, int index) {
-  return Container(
-    padding: EdgeInsets.symmetric(horizontal: 20),
-    height: 50,
-    child: Row(
-      children: <Widget>[
-        Text(
-          index.toString().padLeft(2, "0"),
-          style: TextStyle(color: Colors.grey),
-        ),
-        SizedBox(
-          width: 15,
-        ),
-        Container(
-          height: 40,
-          width: 40,
-          child: Image.asset(
-            cancion.imagen,
-            fit: BoxFit.cover,
+Widget itemAudio(BuildContext context, Cancion cancion, int index) {
+  return InkWell(
+    onTap: () {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ReproductorPage(
+                    canciones: canciones,
+                    index: index - 1,
+                  )));
+    },
+    child: Container(
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      height: 50,
+      child: Row(
+        children: <Widget>[
+          Text(
+            index.toString().padLeft(2, "0"),
+            style: TextStyle(color: Colors.grey),
           ),
-        ),
-        SizedBox(
-          width: 10,
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(cancion.titulo,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15)),
-            Text(cancion.disco, style: TextStyle(color: Colors.grey)),
-          ],
-        ),
-        Spacer(),
-        Icon(
-          Icons.arrow_downward,
-          color: Colors.grey,
-        ),
-        SizedBox(
-          width: 10,
-        ),
-        Icon(Icons.more_horiz, color: Colors.grey),
-      ],
+          SizedBox(
+            width: 15,
+          ),
+          Container(
+            height: 40,
+            width: 40,
+            child: Image.asset(
+              cancion.imagen,
+              fit: BoxFit.cover,
+            ),
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(cancion.titulo,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15)),
+              Text(cancion.disco, style: TextStyle(color: Colors.grey)),
+            ],
+          ),
+          Spacer(),
+          Icon(
+            Icons.arrow_downward,
+            color: Colors.grey,
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          Icon(Icons.more_horiz, color: Colors.grey),
+        ],
+      ),
     ),
   );
 }
