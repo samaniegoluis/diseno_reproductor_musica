@@ -14,6 +14,15 @@ class ReproductorPage extends StatefulWidget {
 
 class _ReproductorPageState extends State<ReproductorPage> {
   double _valorBarra = 0;
+  int indiceDisco = 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    indiceDisco = widget.index;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +36,21 @@ class _ReproductorPageState extends State<ReproductorPage> {
               SizedBox(
                 height: 20,
               ),
-              portada(),
+              Container(
+                height: 310,
+                child: PageView(
+                  onPageChanged: (index) {
+                    setState(() {
+                      indiceDisco = index;
+                    });
+                  },
+                  controller: PageController(
+                      viewportFraction: 0.8, initialPage: widget.index),
+                  children: widget.canciones
+                      .map((cancion) => portada(cancion))
+                      .toList(),
+                ),
+              ),
               SizedBox(
                 height: 20,
               ),
@@ -51,7 +74,7 @@ class _ReproductorPageState extends State<ReproductorPage> {
       decoration: BoxDecoration(
         color: Color(0xff1c1e2c),
         image: DecorationImage(
-          image: AssetImage('assets/imgs/disco.jpg'),
+          image: AssetImage(widget.canciones[indiceDisco].imagenDisco),
           fit: BoxFit.cover,
           colorFilter: ColorFilter.mode(
               Colors.black.withOpacity(0.6), BlendMode.dstATop),
@@ -121,13 +144,15 @@ class _ReproductorPageState extends State<ReproductorPage> {
     );
   }
 
-  Widget portada() {
-    return Container(
-      height: 300,
-      width: 300,
-      child: Image.asset(
-        'assets/imgs/disco.jpg',
-        fit: BoxFit.cover,
+  Widget portada(Cancion cancion) {
+    return Card(
+      child: Container(
+        height: 300,
+        width: 300,
+        child: Image.asset(
+          cancion.imagenDisco,
+          fit: BoxFit.fill,
+        ),
       ),
     );
   }
@@ -138,7 +163,7 @@ class _ReproductorPageState extends State<ReproductorPage> {
       child: Column(
         children: <Widget>[
           Text(
-            widget.canciones[widget.index].titulo,
+            widget.canciones[indiceDisco].titulo,
             style: TextStyle(
                 color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
           ),
@@ -146,7 +171,7 @@ class _ReproductorPageState extends State<ReproductorPage> {
             height: 5,
           ),
           Text(
-            widget.canciones[widget.index].disco,
+            widget.canciones[indiceDisco].disco,
             style: TextStyle(
               color: Colors.grey,
               fontSize: 18,
